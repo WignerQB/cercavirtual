@@ -17,6 +17,7 @@ import os
 # comment out below line to enable tensorflow logging outputs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import time
+import glob
 import tensorflow as tf
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
@@ -58,7 +59,7 @@ flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 #--------------------------------------------------------------------------------------------------
 print("TF version= ",tf.__version__)
 print("np version= ",np.__version__)
-print("Teste funcionou")
+print("Teste rodou!")
 #--------------------------------------------------------------------------------------------------
 
 
@@ -141,41 +142,41 @@ def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
         #cv2.line(IMG, (List_person_inv[0].Xinvader, List_person_inv[0].Yinvader), (X_end, Y_end), (100, 25, 100), 2)
         IMG = cv2.cvtColor(IMG, cv2.COLOR_BGR2RGB)
         
-        
         Pessoa = 'Pessoa {}'.format(Track_Id)
         #HorarioInv = '{}'.format(DateTimeNow.strftime("%X"))
         HorarioInv = "12:54"
         #DataInv = '{}'.format(DateTimeNow.strftime("%x"))
         DataInv = "07/07/2022"
-        IdCam = 1
+        IdCam = 3
         
         Invaders = []
         
-        print("Entrei aqui")
+        #print("Entrei aqui")
+        
+        rows = []
+        with open('./capturas/Historico.csv','r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            header = next(csvreader)
+            for row in csvreader:
+                rows.append(row)
+        
+        for row in rows:
+            print(row[1])
         
         
-        """
-        with open('Historico.csv', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            
-            
-            
-            for row in reader:
-                Invaders.append(row)
-            
-                
-        Invaders.append({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})
-        
-        print("Lista de invasores\n\n")
-        print(Invaders)"""
-        
-        with open('Historico.csv','a', newline='') as csvfile:
+        with open('./capturas/Historico.csv','a', newline='') as csvfile:
             fieldnames = ['Invasor','Horario da invasao','Data da invasao','Id da camera']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             #writer.writeheader()
             #writer.writerows(Invaders)
             writer.writerow({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})
-            
+        
+        for index in enumerate(glob.glob('./capturas/*.*')):
+            pass
+        print("o index eh: ", index[0])
+        index = index[0]
+        #Salva imagem da pessoa que invadiu
+        stt = cv2.imwrite('./capturas/Person{}:{}.png'.format(Track_Id,index), IMG)            
                     
         
 """
