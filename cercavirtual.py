@@ -89,6 +89,13 @@ LowerValue = 10000000000
 Yprojected = Yperson
 Xprojected = Xperson
 
+
+#Outras variaveis--------------------------------------------------------
+SavePermission = True
+
+
+
+
 #Calcular a distância de um ponto a uma reta
 Xaux = int((XlineINICIO + XlineFIM)/2)
 Yaux = int((Xaux - XlineINICIO)*m + YlineINICIO + OFFsetLinha24)
@@ -120,7 +127,8 @@ def LineBuild(image_frame, Xperson, Yperson, Colorperson):
 def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
     #print(Class_Name + "-" + str(Track_Id) + " está na zona de monitoramento")    
 
-
+    SavePermission = True
+        
     num = (Xprsn/m) + Yprsn + XlineINICIO*m - YlineINICIO
     den = (pow(m, 2) + 1)/m
     Xprojected = num/den
@@ -144,14 +152,12 @@ def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
         
         Pessoa = 'Pessoa {}'.format(Track_Id)
         #HorarioInv = '{}'.format(DateTimeNow.strftime("%X"))
-        HorarioInv = "12:54"
+        HorarioInv = "2:54"
         #DataInv = '{}'.format(DateTimeNow.strftime("%x"))
-        DataInv = "07/07/2022"
+        DataInv = "07-07-2022"
         IdCam = 3
         
         Invaders = []
-        
-        #print("Entrei aqui")
         
         rows = []
         with open('./capturas/Historico.csv','r') as csvfile:
@@ -159,25 +165,30 @@ def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
             header = next(csvreader)
             for row in csvreader:
                 rows.append(row)
-        
+                
+        PersonVerify = "Pessoa {}".format(Track_Id)
         for row in rows:
-            print(row[1])
+            if row[0] == PersonVerify:
+            	SavePermission = False
+            
+            
+        if SavePermission == True:
+            
+            
+            with open('./capturas/Historico.csv','a', newline='') as csvfile:
+                fieldnames = ['Invasor','Horario da invasao','Data da invasao','Id da camera']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                #writer.writeheader()
+                #writer.writerows(Invaders)
+                writer.writerow({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})
         
-        
-        with open('./capturas/Historico.csv','a', newline='') as csvfile:
-            fieldnames = ['Invasor','Horario da invasao','Data da invasao','Id da camera']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            #writer.writeheader()
-            #writer.writerows(Invaders)
-            writer.writerow({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})
-        
-        for index in enumerate(glob.glob('./capturas/*.*')):
-            pass
-        print("o index eh: ", index[0])
-        index = index[0]
-        #Salva imagem da pessoa que invadiu
-        stt = cv2.imwrite('./capturas/Person{}:{}.png'.format(Track_Id,index), IMG)            
-                    
+            #for index in enumerate(glob.glob('./capturas/*.*')):
+            #    pass
+
+            #index = index[0]
+            #Salva imagem da pessoa que invadiu
+            stt = cv2.imwrite('./capturas/Person{}|{}|{}.png'.format(Track_Id, HorarioInv, DataInv), IMG)            
+            print(stt)#fazer uma estrutura para salvar no arquivo .csv somente se for salvo a imagem
         
 """
         f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "r")
@@ -328,6 +339,7 @@ def main(_argv):
     frame_num = 0
     # while video is running
     while True:
+    
         return_value, frame = vid.read()
         if return_value:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
