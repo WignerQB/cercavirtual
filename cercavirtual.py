@@ -173,112 +173,16 @@ def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
             
             
         if SavePermission == True:
-            
-            
-            with open('./capturas/Historico.csv','a', newline='') as csvfile:
-                fieldnames = ['Invasor','Horario da invasao','Data da invasao','Id da camera']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                #writer.writeheader()
-                #writer.writerows(Invaders)
-                writer.writerow({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})
-        
-            #for index in enumerate(glob.glob('./capturas/*.*')):
-            #    pass
-
-            #index = index[0]
             #Salva imagem da pessoa que invadiu
-            stt = cv2.imwrite('./capturas/Person{}|{}|{}.png'.format(Track_Id, HorarioInv, DataInv), IMG)            
-            print(stt)#fazer uma estrutura para salvar no arquivo .csv somente se for salvo a imagem
-        
-"""
-        f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "r")
-        ListReadFile.clear()
-        for ReadFile in f:
-            ListReadFile.append(ReadFile)
-        f.close()
-
-        #print("\n\n",bool(ListReadFile),"\n\n")
-
-        
-        #print(ListReadFile)
-        #print("$$$$$$$$$$$$$$$$$$$$$$")
-                
-
-        #Obtem informação da data atual
-        DateTimeNow = datetime.datetime.now()
-
-        if bool(List_person_inv):#Verifica se List_person_inv não está vazia
-            #Percorre a List_person_inv para analisar se o indivíduo X já está na lista de pessoas que invadiram
-            for listofpersoninv in List_person_inv:
-                #print("\n To no for 1")
-                if bool(ListReadFile):
-                    #print(ListReadFile)
-                    for pointer in ListReadFile:
-                        #print("To no for 2", pointer)
-
-                        i = pointer.rindex(" invadiu!")
-                        if int(pointer[6:i]) == listofpersoninv.id:
-                            print("Pessoa {} já invadiu".format(int(pointer[6:i])))
-                        else:
-                            f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "a")
-                            f.writelines(["Pessoa {} invadiu!".format(Track_Id), "\tHorário da invasão: {}".format(DateTimeNow.strftime("%X")), "\tData da invasão: {}".format(DateTimeNow.strftime("%x")), "\tCâmera: 1\n"])
-                            f.close()
-                            for index in enumerate(glob.glob('C:/Users/josew/Pictures/Saved Pictures/*.*')):
-                                pass
-                            #print(index)
-                            index = index[0]
-                            #Salva imagem da pessoa que invadiu
-                            stt = cv2.imwrite('C:/Users/josew/Pictures/Saved Pictures/Test{}.png'.format(index), IMG)
-                            #print("Break do for 2")
-                            break
-                else:
-                    f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "a")
-                    f.writelines(["Pessoa {} invadiu!".format(Track_Id), "\tHorário da invasão: {}".format(DateTimeNow.strftime("%X")), "\tData da invasão: {}".format(DateTimeNow.strftime("%x")), "\tCâmera: 1\n"])
-                    f.close()
-                    for index in enumerate(glob.glob('C:/Users/josew/Pictures/Saved Pictures/*.*')):
-                        pass
-                    #print(index)
-                    index = index[0]
-                    #Salva imagem da pessoa que invadiu
-                    stt = cv2.imwrite('C:/Users/josew/Pictures/Saved Pictures/Test{}.png'.format(index), IMG)
-                    #print("Break do for 1")
-                    break
-
-
-
-
-                if listofpersoninv.id == Track_Id:#Se o indivíduo estiver na lista, é feito a atualização dos outros parâmetros
-                                                  #deste indivíduo
-                    List_person_inv.remove(listofpersoninv)
-                #Caso contrário é somente adicionado
-                List_person_inv.append(Invader(Class_Name, Track_Id, Colpers, Xprsn, Yprsn, "TRUE", DateTimeNow.strftime("%X")))
-                
-
-                
-            print("-----------------------")
-        else:
-            for listofpersoninv in List_person_inv:
-                if bool(ListReadFile):
-                    for pointer in ListReadFile:
-                        i = pointer.rindex(" invadiu!")
-                        if int(pointer[6:i]) == listofpersoninv.id:
-                            print("Pessoa {} já invadiu".format(int(pointer[6:i])))
-                        else:
-                            f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "a")
-                            f.writelines(["Pessoa {} invadiu!".format(Track_Id), "\tHorário da invasão: {}".format(DateTimeNow.strftime("%X")), "\tData da invasão: {}".format(DateTimeNow.strftime("%x")), "\tCâmera: 1\n"])
-                            f.close()
-                else:
-                    f = open("C:/Users/josew/Pictures/Saved Pictures/Informação sobre a invasão.txt", "a")
-                    f.writelines(["Pessoa {} invadiu!".format(Track_Id), "\tHorário da invasão: {}".format(DateTimeNow.strftime("%X")), "\tData da invasão: {}".format(DateTimeNow.strftime("%x")), "\tCâmera: 1\n"])
-                    f.close()
-
-            List_person_inv.append(Invader(Class_Name, Track_Id, Colpers, Xprsn, Yprsn, "TRUE", DateTimeNow.strftime("%X")))
-            
-
-
-    else:
-        cv2.line(IMG, (List_person_inv[0].Xinvader, List_person_inv[0].Yinvader), (X_end, Y_end), Colpers, 2)
-"""
+            stt = cv2.imwrite('./capturas/Person{}|{}|{}.png'.format(Track_Id, HorarioInv, DataInv), IMG)
+            print(stt)
+            if stt == True: 
+                with open('./capturas/Historico.csv','a', newline='') as csvfile:
+                    fieldnames = ['Invasor','Horario da invasao','Data da invasao','Id da camera']
+                    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                    #writer.writeheader()
+                    #writer.writerows(Invaders)
+                    writer.writerow({'Invasor':Pessoa,'Horario da invasao':HorarioInv,'Data da invasao':DataInv,'Id da camera':IdCam})                
 
 
 
