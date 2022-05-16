@@ -88,6 +88,7 @@ ListReadFile = []
 LowerValue = 10000000000
 Yprojected = Yperson
 Xprojected = Xperson
+Yacumulation = []
 
 
 #Outras variaveis--------------------------------------------------------
@@ -141,6 +142,8 @@ def ZonaMonitoramento(IMG, Class_Name, Track_Id , Colpers, Xprsn, Yprsn):
     cv2.line(IMG, (Xprsn, Yprsn), (Xprojected, Yprojected), (100, 25, 100), 2)
     m2 = (Yprsn - Yprojected)/(Xprsn - Xprojected)
     dist = pow((pow((Xprojected - Xprsn), 2)+pow((Yprojected - Yprsn), 2)),0.5)  
+    
+    
     
 
     #print(dist, "<", OFFsetLinha24)
@@ -377,18 +380,25 @@ def main(_argv):
             if FLAGS.info:
                 print("Tracker ID: {}, Class: {},  BBox Coords (xmin, ymin, xmax, ymax): {}".format(str(track.track_id), class_name, (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))))
 
-	
+        if Yperson != 1:
+            Yacumulation.append(Yperson)
+        Ypersonmed = 0
+        i = 0
+        for yi in Yacumulation:
+            if i < 10:
+                Ypersonmed = Ypersonmed + yi
+            i = i + 1
+        Ypersonmed = Ypersonmed/10 #Calcula uma media de qual a posiçao inicial da pessoa
+        #print(Ypersonmed, "<", (int(m*(Xperson - XlineINICIO) + YlineINICIO) + OFFsetLinha24))
         LineBuild(frame, Xperson, Yperson, Colorperson)
         try:
             YCheck = int(m*(Xperson - XlineINICIO) + YlineINICIO)
             #print("A posiçao da pessoa ", track.track_id," eh: ",(Xperson,YCheck))
-            if Yperson > (YCheck - OFFsetLinha24) and Yperson < (YCheck + OFFsetLinha24): #Entre as linhas 4 e 2
+            if Yperson > (YCheck - OFFsetLinha24) and Yperson < (YCheck + OFFsetLinha24) and class_name == "person" and Ypersonmed < (YCheck + OFFsetLinha24): #Entre as linhas 4 e 2 and for uma pessoa and nao estar no lado de dentro da cerca
                 print("Zona da cerca")
                 ZonaMonitoramento(frame, class_name, track.track_id, Colorperson, Xperson, Yperson)
         except:
-            pass
-	
-	
+            pass	
 
 
         # calculate frames per second of running detections
@@ -399,7 +409,7 @@ def main(_argv):
         
         if not FLAGS.dont_show:
             pass
-            #cv2.imshow("Output Video", result)
+            cv2.imshow("Output Video", result)
         
     # if output flag is set, save video file
         if FLAGS.output:
